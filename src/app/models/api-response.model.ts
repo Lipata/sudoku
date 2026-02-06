@@ -1,6 +1,4 @@
-import { Difficulty } from './board.model';
-
-export type ApiBoard = Array<Array<number>>;
+import { ApiBoard, Difficulty } from './board.model';
 
 // GET /board?difficulty=easy
 export type BoardResponse = {
