@@ -57,3 +57,12 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+## Used commands
+
+```bash
+npm i -g @angular/cli
+ng new sudoku --style=scss --routing --ssr --skip-git=false
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init
+```
