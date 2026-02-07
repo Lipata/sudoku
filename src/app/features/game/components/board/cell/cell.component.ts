@@ -8,4 +8,6 @@ import { Cell } from '../../../../../models';
 })
 export class CellComponent {
   cell = input.required<Cell>();
+  row = input.required<number>();
+  col = input.required<number>();
 }

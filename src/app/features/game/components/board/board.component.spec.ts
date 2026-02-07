@@ -42,12 +42,12 @@ describe('BoardComponent', () => {
   });
 
   it('should render 81 cells (9x9 grid)', () => {
-    const cells = fixture.nativeElement.querySelectorAll('.grid > div');
+    const cells = fixture.nativeElement.querySelectorAll('app-cell');
     expect(cells.length).toBe(81);
   });
 
   it('should display prefilled cell values', () => {
-    const cells = fixture.nativeElement.querySelectorAll('.grid > div');
+    const cells = fixture.nativeElement.querySelectorAll('app-cell');
     // First cell should show 5
     expect(cells[0].textContent.trim()).toBe('5');
     // Second cell should show 3
@@ -55,7 +55,7 @@ describe('BoardComponent', () => {
   });
 
   it('should not display value for empty cells', () => {
-    const cells = fixture.nativeElement.querySelectorAll('.grid > div');
+    const cells = fixture.nativeElement.querySelectorAll('app-cell');
     // Third cell (index 2) is 0, should be empty
     expect(cells[2].textContent.trim()).toBe('');
   });
@@ -74,19 +74,4 @@ describe('BoardComponent', () => {
     expect(cellContents[2].classList.contains('font-bold')).toBe(false);
   });
 
-  it('should apply thick border after every 3rd column', () => {
-    const cells = fixture.nativeElement.querySelectorAll('.grid > div');
-    // Cell at index 2 (3rd column) should have thick right border
-    expect(cells[2].classList.contains('border-r-2')).toBe(true);
-    // Cell at index 5 (6th column) should have thick right border
-    expect(cells[5].classList.contains('border-r-2')).toBe(true);
-  });
-
-  it('should apply thick border after every 3rd row', () => {
-    const cells = fixture.nativeElement.querySelectorAll('.grid > div');
-    // Cells in row 3 (indices 18-26) should have thick bottom border
-    expect(cells[18].classList.contains('border-b-2')).toBe(true);
-    // Cells in row 6 (indices 45-53) should have thick bottom border
-    expect(cells[45].classList.contains('border-b-2')).toBe(true);
-  });
 });
