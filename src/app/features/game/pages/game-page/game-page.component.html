@@ -1,0 +1,13 @@
+<div class="min-h-screen bg-gray-50 py-8 px-4">
+  <div class="max-w-md mx-auto">
+    <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">Sudoku</h1>
+
+    @if (isLoading()) {
+      <div class="text-center text-gray-600">Loading puzzle...</div>
+    } @else if (error()) {
+      <div class="text-center text-red-600">{{ error() }}</div>
+    } @else {
+      <app-board [board]="board()" />
+    }
+  </div>
+</div>

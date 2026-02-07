@@ -1,0 +1,21 @@
+<div
+  class="grid grid-cols-9 gap-0 border-2 border-gray-800 bg-gray-300 w-full max-w-md aspect-square"
+>
+  @for (row of board(); track rowIndex; let rowIndex = $index) {
+    @for (cell of row; track colIndex; let colIndex = $index) {
+      <div
+        class="flex items-center justify-center bg-white text-lg md:text-2xl font-medium border border-gray-300"
+        [class.border-r-2]="(colIndex + 1) % 3 === 0 && colIndex !== 8"
+        [class.border-b-2]="(rowIndex + 1) % 3 === 0 && rowIndex !== 8"
+        [class.border-r-gray-800]="(colIndex + 1) % 3 === 0"
+        [class.border-b-gray-800]="(rowIndex + 1) % 3 === 0"
+        [class.bg-gray-100]="cell.isPrefilled"
+        [class.font-bold]="cell.isPrefilled"
+      >
+        @if (cell.value !== 0) {
+          {{ cell.value }}
+        }
+      </div>
+    }
+  }
+</div>
