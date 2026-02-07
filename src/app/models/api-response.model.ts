@@ -3,6 +3,7 @@ import { ApiBoard, Difficulty } from './board.model';
 // GET /board?difficulty=easy
 export type BoardResponse = {
   board: ApiBoard;
+  difficulty?: Difficulty; // May be returned by API when random is selected
 };
 
 // Request body for POST endpoints
