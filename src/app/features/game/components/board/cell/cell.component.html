@@ -1,0 +1,10 @@
+<div
+  class="flex items-center justify-center w-full h-full text-lg md:text-2xl font-medium"
+  [class.bg-gray-100]="cell().isPrefilled"
+  [class.bg-white]="!cell().isPrefilled"
+  [class.font-bold]="cell().isPrefilled"
+>
+  @if (cell().value !== 0) {
+    {{ cell().value }}
+  }
+</div>

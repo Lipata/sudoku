@@ -61,17 +61,17 @@ describe('BoardComponent', () => {
   });
 
   it('should apply prefilled styling to non-zero cells', () => {
-    const cells = fixture.nativeElement.querySelectorAll('.grid > div');
+    const cellContents = fixture.nativeElement.querySelectorAll('app-cell > div');
     // First cell is prefilled (value 5)
-    expect(cells[0].classList.contains('bg-gray-100')).toBe(true);
-    expect(cells[0].classList.contains('font-bold')).toBe(true);
+    expect(cellContents[0].classList.contains('bg-gray-100')).toBe(true);
+    expect(cellContents[0].classList.contains('font-bold')).toBe(true);
   });
 
   it('should not apply prefilled styling to empty cells', () => {
-    const cells = fixture.nativeElement.querySelectorAll('.grid > div');
+    const cellContents = fixture.nativeElement.querySelectorAll('app-cell > div');
     // Third cell is empty (value 0)
-    expect(cells[2].classList.contains('bg-gray-100')).toBe(false);
-    expect(cells[2].classList.contains('font-bold')).toBe(false);
+    expect(cellContents[2].classList.contains('bg-gray-100')).toBe(false);
+    expect(cellContents[2].classList.contains('font-bold')).toBe(false);
   });
 
   it('should apply thick border after every 3rd column', () => {
