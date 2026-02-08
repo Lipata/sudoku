@@ -11,10 +11,16 @@ export class CellComponent {
   row = input.required<number>();
   col = input.required<number>();
   selectedCell = model<CellPosition | null>(null);
+  invalidCell = input<CellPosition | null>(null);
 
   isSelected = computed(() => {
     const selected = this.selectedCell();
     return selected?.row === this.row() && selected?.col === this.col();
+  });
+
+  isInvalid = computed(() => {
+    const invalid = this.invalidCell();
+    return invalid?.row === this.row() && invalid?.col === this.col();
   });
 
   onClick(): void {

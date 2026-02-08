@@ -5,6 +5,7 @@ import { SudokuApiService } from '../../../../core/services';
 import { Board, Difficulty, CellPosition } from '../../../../models';
 import { apiBoardToBoard, createEmptyBoard } from '../../../../utils/board.util';
 import { isNavigationKey, getNextPosition, isNumberKey, isClearKey } from '../../../../utils/keyboard.util';
+import { isValidPlacement } from '../../../../utils/validation.util';
 
 @Component({
   selector: 'app-game-page',
@@ -21,6 +22,7 @@ export class GamePageComponent {
   gameStarted = signal(false);
   selectedDifficulty = signal<Difficulty | null>(null);
   selectedCell = signal<CellPosition | null>(null);
+  invalidCell = signal<CellPosition | null>(null);
 
   readonly difficulties: Difficulty[] = ['easy', 'medium', 'hard', 'random'];
 
@@ -54,9 +56,32 @@ export class GamePageComponent {
     const currentBoard = this.board();
     if (currentBoard[selected.row][selected.col].isPrefilled) return;
 
+    // In Easy mode: validate placement
+    if (this.selectedDifficulty() === 'easy' && value !== 0) {
+      if (!isValidPlacement(currentBoard, selected.row, selected.col, value)) {
+        this.showInvalidFeedback(selected, value);
+        return;
+      }
+    }
+
+    this.updateCell(selected, value);
+  }
+
+  private showInvalidFeedback(position: CellPosition, value: number): void {
+    this.updateCell(position, value);
+    this.invalidCell.set(position);
+
+    setTimeout(() => {
+      this.updateCell(position, 0);
+      this.invalidCell.set(null);
+    }, 500);
+  }
+
+  private updateCell(position: CellPosition, value: number): void {
+    const currentBoard = this.board();
     const newBoard = currentBoard.map((r, rIdx) =>
       r.map((cell, cIdx) =>
-        rIdx === selected.row && cIdx === selected.col ? { ...cell, value } : cell
+        rIdx === position.row && cIdx === position.col ? { ...cell, value } : cell
       )
     );
     this.board.set(newBoard);

@@ -11,4 +11,5 @@ import { CellComponent } from './cell/cell.component';
 export class BoardComponent {
   board = input.required<Board>();
   selectedCell = model<CellPosition | null>(null);
+  invalidCell = input<CellPosition | null>(null);
 }
