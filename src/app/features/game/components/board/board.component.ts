@@ -1,5 +1,5 @@
-import { Component, input } from '@angular/core';
-import { Board } from '../../../../models';
+import { Component, input, model } from '@angular/core';
+import { Board, CellPosition } from '../../../../models';
 import { CellComponent } from './cell/cell.component';
 
 @Component({
@@ -10,4 +10,5 @@ import { CellComponent } from './cell/cell.component';
 })
 export class BoardComponent {
   board = input.required<Board>();
+  selectedCell = model<CellPosition | null>(null);
 }

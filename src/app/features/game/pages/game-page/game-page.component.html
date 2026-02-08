@@ -38,7 +38,15 @@
       >
         {{ selectedDifficulty() | titlecase }}
       </div>
-      <app-board [board]="board()" />
+      <app-board
+        [board]="board()"
+        [(selectedCell)]="selectedCell"
+      />
+
+      <p class="text-center text-gray-500 text-sm mt-4">
+        Arrow keys or WASD to navigate, 1-9 to enter, Backspace to clear
+      </p>
+
       <button
         class="w-full mt-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
         (click)="backToMenu()"
