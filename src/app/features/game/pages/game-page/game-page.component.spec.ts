@@ -169,6 +169,23 @@ describe('GamePageComponent', () => {
     });
   });
 
+  describe('showNumberPad', () => {
+    it('is initially hidden', () => {
+      expect(component.showNumberPad()).toBe(false);
+    });
+
+    it('can be toggled on', () => {
+      component.showNumberPad.set(true);
+      expect(component.showNumberPad()).toBe(true);
+    });
+
+    it('can be toggled off', () => {
+      component.showNumberPad.set(true);
+      component.showNumberPad.set(false);
+      expect(component.showNumberPad()).toBe(false);
+    });
+  });
+
   describe('onKeyDown', () => {
     it('ignores keys when game not started', () => {
       component.gameStarted.set(false);
