@@ -1,6 +1,7 @@
 import { Component, HostListener, inject, signal } from '@angular/core';
 import { TitleCasePipe } from '@angular/common';
 import { BoardComponent } from '../../components/board/board.component';
+import { NumberPadComponent } from '../../components/number-pad/number-pad.component';
 import { SudokuApiService } from '../../../../core/services';
 import { Board, Difficulty, CellPosition } from '../../../../models';
 import { apiBoardToBoard, createEmptyBoard } from '../../../../utils/board.util';
@@ -10,7 +11,7 @@ import { isValidPlacement } from '../../../../utils/validation.util';
 @Component({
   selector: 'app-game-page',
   standalone: true,
-  imports: [BoardComponent, TitleCasePipe],
+  imports: [BoardComponent, NumberPadComponent, TitleCasePipe],
   templateUrl: './game-page.component.html',
 })
 export class GamePageComponent {
@@ -23,6 +24,7 @@ export class GamePageComponent {
   selectedDifficulty = signal<Difficulty | null>(null);
   selectedCell = signal<CellPosition | null>(null);
   invalidCell = signal<CellPosition | null>(null);
+  showNumberPad = signal(false);
 
   readonly difficulties: Difficulty[] = ['easy', 'medium', 'hard', 'random'];
 

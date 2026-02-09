@@ -1,0 +1,15 @@
+<div class="grid grid-cols-5 gap-2">
+  @for (num of numbers; track num) {
+    <button
+      class="py-3 text-xl font-medium rounded-lg transition-colors active:scale-95"
+      [class]="num === 0
+        ? 'bg-gray-400 text-white active:bg-gray-500'
+        : 'bg-blue-500 text-white active:bg-blue-600'"
+      [class.opacity-50]="disabled()"
+      [disabled]="disabled()"
+      (click)="onNumberClick(num)"
+    >
+      {{ num === 0 ? 'Clear' : num }}
+    </button>
+  }
+</div>

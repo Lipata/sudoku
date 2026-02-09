@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background -->
+  <rect width="512" height="512" rx="64" fill="#3b82f6"/>
+
+  <!-- Grid background -->
+  <rect x="56" y="56" width="400" height="400" rx="8" fill="white"/>
+
+  <!-- Grid lines - thin -->
+  <g stroke="#d1d5db" stroke-width="2">
+    <line x1="189" y1="56" x2="189" y2="456"/>
+    <line x1="323" y1="56" x2="323" y2="456"/>
+    <line x1="56" y1="189" x2="456" y2="189"/>
+    <line x1="56" y1="323" x2="456" y2="323"/>
+  </g>
+
+  <!-- Grid lines - thick (3x3 boxes) -->
+  <g stroke="#1f2937" stroke-width="4">
+    <line x1="56" y1="56" x2="456" y2="56"/>
+    <line x1="56" y1="456" x2="456" y2="456"/>
+    <line x1="56" y1="56" x2="56" y2="456"/>
+    <line x1="456" y1="56" x2="456" y2="456"/>
+  </g>
+
+  <!-- Numbers -->
+  <g font-family="Arial, sans-serif" font-weight="bold" font-size="72" text-anchor="middle" dominant-baseline="central">
+    <!-- Row 1 -->
+    <text x="122" y="122" fill="#1f2937">5</text>
+    <text x="389" y="122" fill="#3b82f6">7</text>
+
+    <!-- Row 2 -->
+    <text x="256" y="256" fill="#1f2937">9</text>
+
+    <!-- Row 3 -->
+    <text x="122" y="389" fill="#3b82f6">3</text>
+    <text x="389" y="389" fill="#1f2937">1</text>
+  </g>
+</svg>

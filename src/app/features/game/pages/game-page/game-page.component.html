@@ -44,12 +44,37 @@
         [invalidCell]="invalidCell()"
       />
 
-      <p class="text-center text-gray-500 text-sm mt-4">
-        Arrow keys or WASD to navigate, 1-9 to enter, Backspace to clear
-      </p>
+      <!-- Mobile: always visible -->
+      <div class="md:hidden mt-4">
+        <app-number-pad
+          [disabled]="!selectedCell()"
+          (numberSelected)="setCellValue($event)"
+        />
+      </div>
+
+      <!-- Desktop: collapsible -->
+      <div class="hidden md:block mt-4">
+        <button
+          class="w-full py-2 text-sm text-gray-600 hover:text-gray-800"
+          (click)="showNumberPad.set(!showNumberPad())"
+        >
+          {{ showNumberPad() ? 'Hide' : 'Show' }} Number Pad
+        </button>
+        @if (showNumberPad()) {
+          <div class="mt-2">
+            <app-number-pad
+              [disabled]="!selectedCell()"
+              (numberSelected)="setCellValue($event)"
+            />
+          </div>
+        }
+        <p class="text-center text-gray-500 text-sm mt-4">
+          Arrow keys or WASD to navigate, 1-9 to enter, Backspace to clear
+        </p>
+      </div>
 
       <button
-        class="w-full mt-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
+        class="w-full mt-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 active:bg-gray-800"
         (click)="backToMenu()"
       >
         New Game
