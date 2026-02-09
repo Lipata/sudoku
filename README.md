@@ -10,8 +10,9 @@ A modern Sudoku game built with Angular.
 - **Easy mode assistance**: Invalid numbers are highlighted in red and automatically disappear
 - **Keyboard navigation**: Use Arrow keys or WASD to navigate, 1-9 to enter numbers, Backspace to clear
 - **Click to select**: Click any cell to select it
-- **Mobile number pad**: Touch-friendly number buttons, always visible on mobile
+- **Mobile cell input popup**: Tap a cell to open a number picker popup; in Easy mode, invalid numbers are filtered out
 - **Desktop number pad**: Collapsible number pad for mouse/touch input
+- **Validation and solve**: Validate your solution or reveal the answer with confirmation dialogs
 - **PWA support**: Installable as a standalone app on mobile and desktop
 - **Responsive design**: Optimized for both desktop and mobile devices
 
@@ -74,7 +75,9 @@ src/app/
 │   ├── components/
 │   │   └── board/
 │   │       ├── cell/       # Individual cell component
-│   │       └── number-pad/ # Number input pad (mobile/collapsible)
+│   │       ├── cell-input/  # Mobile number picker popup
+│   │       ├── number-pad/ # Desktop number input pad
+│   │       └── popup/      # Validation/confirmation popups
 │   └── pages/game-page/    # Main game page
 ├── models/                 # TypeScript interfaces
 └── utils/                  # Keyboard and validation utilities

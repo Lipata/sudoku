@@ -1,18 +1,19 @@
-import { Component, HostListener, inject, signal } from '@angular/core';
+import { Component, HostListener, inject, signal, computed } from '@angular/core';
 import { TitleCasePipe } from '@angular/common';
 import { BoardComponent } from '../../components/board/board.component';
 import { NumberPadComponent } from '../../components/board/number-pad/number-pad.component';
 import { PopupComponent } from '../../components/board/popup/popup.component';
+import { CellInputComponent } from '../../components/board/cell-input/cell-input.component';
 import { SudokuApiService } from '../../../../core/services';
 import { Board, Difficulty, CellPosition } from '../../../../models';
 import { apiBoardToBoard, boardToApiBoard, createEmptyBoard } from '../../../../utils/board.util';
 import { isNavigationKey, getNextPosition, isNumberKey, isClearKey } from '../../../../utils/keyboard.util';
-import { isValidPlacement } from '../../../../utils/validation.util';
+import { isValidPlacement, getInvalidNumbers } from '../../../../utils/validation.util';
 
 @Component({
   selector: 'app-game-page',
   standalone: true,
-  imports: [BoardComponent, NumberPadComponent, PopupComponent, TitleCasePipe],
+  imports: [BoardComponent, NumberPadComponent, PopupComponent, CellInputComponent, TitleCasePipe],
   templateUrl: './game-page.component.html',
 })
 export class GamePageComponent {
@@ -36,7 +37,15 @@ export class GamePageComponent {
 
   // UI
   showNumberPad = signal(false);
+  showCellInput = signal(false);
   pendingAction = signal<'solve' | 'newGame' | null>(null);
+
+  // Computed: disabled numbers for easy mode cell input
+  disabledNumbers = computed(() => {
+    const selected = this.selectedCell();
+    if (!selected || this.selectedDifficulty() !== 'easy') return [];
+    return getInvalidNumbers(this.board(), selected.row, selected.col);
+  });
 
   readonly difficulties: Difficulty[] = ['easy', 'medium', 'hard', 'random'];
 
@@ -147,6 +156,24 @@ export class GamePageComponent {
 
   clearValidationStatus(): void {
     this.validationStatus.set(null);
+  }
+
+  onMobileCellSelect(position: CellPosition | null): void {
+    if (!position) return;
+    const cell = this.board()[position.row][position.col];
+    if (!cell.isPrefilled) {
+      this.selectedCell.set(position);
+      this.showCellInput.set(true);
+    }
+  }
+
+  onCellInputSelect(value: number): void {
+    this.setCellValue(value);
+    this.showCellInput.set(false);
+  }
+
+  closeCellInput(): void {
+    this.showCellInput.set(false);
   }
 
   requestAction(action: 'solve' | 'newGame'): void {

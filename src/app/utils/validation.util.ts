@@ -24,3 +24,15 @@ export function isValidPlacement(board: Board, row: number, col: number, value: 
 
   return true;
 }
+
+export function getInvalidNumbers(board: Board, row: number, col: number): number[] {
+  const invalid: number[] = [];
+
+  for (let num = 1; num <= 9; num++) {
+    if (!isValidPlacement(board, row, col, num)) {
+      invalid.push(num);
+    }
+  }
+
+  return invalid;
+}

@@ -38,21 +38,29 @@
       >
         {{ selectedDifficulty() | titlecase }}
       </div>
-      <app-board
-        [board]="board()"
-        [(selectedCell)]="selectedCell"
-        [invalidCell]="invalidCell()"
-      />
+      <!-- Mobile: board with tap-to-input -->
+      <div class="md:hidden">
+        <app-board
+          [board]="board()"
+          [selectedCell]="selectedCell()"
+          [invalidCell]="invalidCell()"
+          (selectedCellChange)="onMobileCellSelect($event)"
+        />
+        <p class="text-center text-gray-500 text-sm mt-4">
+          Tap a cell to enter a number
+        </p>
+      </div>
 
-      <!-- Mobile: always visible -->
-      <div class="md:hidden mt-4">
-        <app-number-pad
-          [disabled]="!selectedCell()"
-          (numberSelected)="setCellValue($event)"
+      <!-- Desktop: board with keyboard/number pad -->
+      <div class="hidden md:block">
+        <app-board
+          [board]="board()"
+          [(selectedCell)]="selectedCell"
+          [invalidCell]="invalidCell()"
         />
       </div>
 
-      <!-- Desktop: collapsible -->
+      <!-- Desktop: collapsible number pad -->
       <div class="hidden md:block mt-4">
         <button
           class="w-full py-2 text-sm text-gray-600 hover:text-gray-800"
@@ -123,5 +131,14 @@
       : 'Are you sure you want to start a new game?'"
     (confirmed)="confirmAction()"
     (cancelled)="cancelAction()"
+  />
+}
+
+<!-- Mobile cell input popup -->
+@if (showCellInput()) {
+  <app-cell-input
+    [disabledNumbers]="disabledNumbers()"
+    (numberSelected)="onCellInputSelect($event)"
+    (closed)="closeCellInput()"
   />
 }
