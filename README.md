@@ -1,68 +1,82 @@
 # Sudoku
 
+A modern Sudoku game built with Angular.
+
+**Play now:** https://lipata.github.io/sudoku/
+
+## Features
+
+- **Difficulty levels**: Easy, Medium, Hard, and Random
+- **Easy mode assistance**: Invalid numbers are highlighted in red and automatically disappear
+- **Keyboard navigation**: Use Arrow keys or WASD to navigate, 1-9 to enter numbers, Backspace to clear
+- **Click to select**: Click any cell to select it
+- **Responsive design**: Works on desktop and mobile devices
+
+## Tech Stack
+
+- **Framework**: [Angular 21](https://angular.dev/) with standalone components
+- **State Management**: Angular Signals
+- **Styling**: [Tailwind CSS 3](https://tailwindcss.com/)
+- **Template Syntax**: New control flow (`@if`, `@for`)
+- **Testing**: [Vitest](https://vitest.dev/)
+- **SSR**: Server-side rendering with hydration
+- **API**: [Sugoku API](https://sugoku.onrender.com/) for puzzle generation
+- **CI/CD**: GitHub Actions with deployment to GitHub Pages
+
+## Development
+
+### Prerequisites
+
+- Node.js 22.x or 24.x
+- npm
+
+### Setup
+
+```bash
+npm install
+```
+
+### Development server
+
+```bash
+npm start
+```
+
+Open http://localhost:4200/ in your browser.
+
+### Build
+
+```bash
+npm run build
+```
+
+### Run tests
+
+```bash
+npm test
+```
+
+### Build for GitHub Pages
+
+```bash
+npm run build:pages
+```
+
+## Project Structure
+
+```
+src/app/
+├── core/services/          # API service
+├── features/game/
+│   ├── components/
+│   │   └── board/          # Board and cell components
+│   └── pages/game-page/    # Main game page
+├── models/                 # TypeScript interfaces
+└── utils/                  # Keyboard and validation utilities
+```
+
+---
+
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.3.
 
-## Development server
-
-To start a local development server, run:
-
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
-
-## Used commands
-
-```bash
-npm i -g @angular/cli
-ng new sudoku --style=scss --routing --ssr --skip-git=false
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init
-```
+© 2026 Lipata. All rights reserved.
