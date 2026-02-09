@@ -12,6 +12,7 @@ export class CellComponent {
   col = input.required<number>();
   selectedCell = model<CellPosition | null>(null);
   invalidCell = input<CellPosition | null>(null);
+  highlightedNumber = input<number | null>(null);
 
   isSelected = computed(() => {
     const selected = this.selectedCell();
@@ -21,6 +22,12 @@ export class CellComponent {
   isInvalid = computed(() => {
     const invalid = this.invalidCell();
     return invalid?.row === this.row() && invalid?.col === this.col();
+  });
+
+  isHighlighted = computed(() => {
+    const highlighted = this.highlightedNumber();
+    const cellValue = this.cell().value;
+    return highlighted !== null && highlighted !== 0 && cellValue === highlighted && !this.isSelected();
   });
 
   onClick(): void {

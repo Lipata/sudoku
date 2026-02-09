@@ -13,6 +13,7 @@ A modern Sudoku game built with Angular.
 - **Mobile cell input popup**: Tap a cell to open a number picker popup; in Easy mode, invalid numbers are filtered out
 - **Desktop number pad**: Collapsible number pad for mouse/touch input
 - **Validation and solve**: Validate your solution or reveal the answer with confirmation dialogs
+- **Number highlighting**: Selecting a cell highlights all cells with the same number (Easy/Medium only)
 - **PWA support**: Installable as a standalone app on mobile and desktop
 - **Responsive design**: Optimized for both desktop and mobile devices
 

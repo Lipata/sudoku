@@ -1,9 +1,10 @@
 <div
   class="flex items-center justify-center w-full h-full text-lg md:text-2xl font-medium border border-gray-300 transition-colors cursor-pointer"
-  [class.bg-gray-100]="cell().isPrefilled && !isSelected() && !isInvalid()"
-  [class.bg-white]="!cell().isPrefilled && !isSelected() && !isInvalid()"
+  [class.bg-gray-100]="cell().isPrefilled && !isSelected() && !isInvalid() && !isHighlighted()"
+  [class.bg-white]="!cell().isPrefilled && !isSelected() && !isInvalid() && !isHighlighted()"
   [class.bg-blue-200]="isSelected() && !isInvalid()"
   [class.bg-red-200]="isInvalid()"
+  [class.bg-yellow-100]="isHighlighted()"
   [class.font-bold]="cell().isPrefilled"
   [class.text-blue-600]="!cell().isPrefilled && cell().value !== 0 && !isInvalid()"
   [class.text-red-600]="isInvalid()"

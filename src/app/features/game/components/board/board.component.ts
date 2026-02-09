@@ -1,5 +1,5 @@
-import { Component, input, model } from '@angular/core';
-import { Board, CellPosition } from '../../../../models';
+import { Component, computed, input, model } from '@angular/core';
+import { Board, CellPosition, Difficulty } from '../../../../models';
 import { CellComponent } from './cell/cell.component';
 
 @Component({
@@ -12,4 +12,14 @@ export class BoardComponent {
   board = input.required<Board>();
   selectedCell = model<CellPosition | null>(null);
   invalidCell = input<CellPosition | null>(null);
+  difficulty = input<Difficulty | null>(null);
+
+  highlightedNumber = computed(() => {
+    const diff = this.difficulty();
+    if (diff !== 'easy' && diff !== 'medium') return null;
+
+    const selected = this.selectedCell();
+    if (!selected) return null;
+    return this.board()[selected.row][selected.col].value;
+  });
 }
