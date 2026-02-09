@@ -72,8 +72,9 @@ src/app/
 ├── core/services/          # API service
 ├── features/game/
 │   ├── components/
-│   │   ├── board/          # Board and cell components
-│   │   └── number-pad/     # Number input pad (mobile/collapsible)
+│   │   └── board/
+│   │       ├── cell/       # Individual cell component
+│   │       └── number-pad/ # Number input pad (mobile/collapsible)
 │   └── pages/game-page/    # Main game page
 ├── models/                 # TypeScript interfaces
 └── utils/                  # Keyboard and validation utilities

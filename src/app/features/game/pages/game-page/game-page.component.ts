@@ -1,7 +1,7 @@
 import { Component, HostListener, inject, signal } from '@angular/core';
 import { TitleCasePipe } from '@angular/common';
 import { BoardComponent } from '../../components/board/board.component';
-import { NumberPadComponent } from '../../components/number-pad/number-pad.component';
+import { NumberPadComponent } from '../../components/board/number-pad/number-pad.component';
 import { SudokuApiService } from '../../../../core/services';
 import { Board, Difficulty, CellPosition } from '../../../../models';
 import { apiBoardToBoard, createEmptyBoard } from '../../../../utils/board.util';
