@@ -8,15 +8,20 @@ A modern Sudoku game built with Angular.
 
 - **Difficulty levels**: Easy, Medium, Hard, and Random
 - **Easy mode assistance**: Invalid numbers are highlighted in red and automatically disappear
-- **Keyboard navigation**: Arrow keys or WASD to navigate, Tab/Shift+Tab for next/previous empty cell, Home/End for row start/end, PageUp/PageDown for column start/end, Escape to deselect, 1-9 to enter numbers, Backspace to clear
+- **Easy/Medium mode assistance**: Selecting a cell highlights all cells with the same number
+
 - **Contextual keyboard hints**: Visual keyboard shortcuts displayed on desktop - navigation hints at top right, input hints at center right when a cell is selected
+
 - **Click to select**: Click any cell to select it
-- **Mobile cell input popup**: Tap a cell to open a number picker popup; in Easy mode, invalid numbers are filtered out
+- **Keyboard navigation**: Arrow keys or WASD to navigate, Tab/Shift+Tab for next/previous empty cell, Home/End for row start/end, PageUp/PageDown for column start/end, Escape to deselect, 1-9 to enter numbers, Backspace to clear
 - **Desktop number pad**: Collapsible number pad for mouse/touch input
+- **Mobile cell input popup**: Tap a cell to open a number picker popup; in Easy mode, invalid numbers are filtered out
+
 - **Validation and solve**: Validate your solution or reveal the answer with confirmation dialogs
-- **Number highlighting**: Selecting a cell highlights all cells with the same number (Easy/Medium only)
-- **PWA support**: Installable as a standalone app on mobile and desktop
+
 - **Responsive design**: Optimized for both desktop and mobile devices
+
+- **PWA support**: Installable as a standalone app on mobile and desktop
 
 ## Tech Stack
 
