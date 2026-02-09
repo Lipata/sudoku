@@ -1,0 +1,56 @@
+<div class="keyboard-hints flex flex-col items-end gap-4 text-xs text-gray-500">
+  @if (mode() === 'navigation') {
+    <!-- Navigation hints - always visible at top right -->
+    <div class="flex items-center gap-2">
+      <div class="flex flex-col items-center gap-0.5">
+        <kbd class="key">W</kbd>
+        <div class="flex gap-0.5">
+          <kbd class="key">A</kbd>
+          <kbd class="key">S</kbd>
+          <kbd class="key">D</kbd>
+        </div>
+      </div>
+      <span class="text-gray-400">or</span>
+      <div class="flex flex-col items-center gap-0.5">
+        <kbd class="key">↑</kbd>
+        <div class="flex gap-0.5">
+          <kbd class="key">←</kbd>
+          <kbd class="key">↓</kbd>
+          <kbd class="key">→</kbd>
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-1">
+      <span>next empty cell</span>
+      <kbd class="key key-wide">Tab</kbd>
+    </div>
+    <div class="flex items-center gap-1">
+      <span>row start/end</span>
+      <kbd class="key key-wide">Home</kbd>
+      <kbd class="key key-wide">End</kbd>
+    </div>
+    <div class="flex items-center gap-1">
+      <span>column start/end</span>
+      <kbd class="key key-wide">PgUp</kbd>
+      <kbd class="key key-wide">PgDn</kbd>
+    </div>
+  } @else {
+    <!-- Input hints - shown at bottom right when cell is selected -->
+    <div class="flex items-center gap-1">
+      <span>enter</span>
+      <div class="flex gap-0.5">
+        <kbd class="key">1</kbd>
+        <span class="text-gray-400">-</span>
+        <kbd class="key">9</kbd>
+      </div>
+    </div>
+    <div class="flex items-center gap-1">
+      <span>clear</span>
+      <kbd class="key key-wide">⌫</kbd>
+    </div>
+    <div class="flex items-center gap-1">
+      <span>deselect</span>
+      <kbd class="key key-wide">Esc</kbd>
+    </div>
+  }
+</div>

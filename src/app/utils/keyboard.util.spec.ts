@@ -8,8 +8,12 @@ import {
   isTabKey,
   isHomeKey,
   isEndKey,
+  isPageUpKey,
+  isPageDownKey,
   getRowStart,
   getRowEnd,
+  getColumnStart,
+  getColumnEnd,
 } from './keyboard.util';
 
 describe('keyboard.util', () => {
@@ -177,6 +181,48 @@ describe('keyboard.util', () => {
 
     it('defaults to row 0 when current is null', () => {
       expect(getRowEnd(null)).toEqual({ row: 0, col: 8 });
+    });
+  });
+
+  describe('isPageUpKey', () => {
+    it('returns true for PageUp', () => {
+      expect(isPageUpKey('PageUp')).toBe(true);
+    });
+
+    it('returns false for other keys', () => {
+      expect(isPageUpKey('PageDown')).toBe(false);
+      expect(isPageUpKey('Home')).toBe(false);
+    });
+  });
+
+  describe('isPageDownKey', () => {
+    it('returns true for PageDown', () => {
+      expect(isPageDownKey('PageDown')).toBe(true);
+    });
+
+    it('returns false for other keys', () => {
+      expect(isPageDownKey('PageUp')).toBe(false);
+      expect(isPageDownKey('End')).toBe(false);
+    });
+  });
+
+  describe('getColumnStart', () => {
+    it('returns row 0 of current column', () => {
+      expect(getColumnStart({ row: 5, col: 7 })).toEqual({ row: 0, col: 7 });
+    });
+
+    it('defaults to column 0 when current is null', () => {
+      expect(getColumnStart(null)).toEqual({ row: 0, col: 0 });
+    });
+  });
+
+  describe('getColumnEnd', () => {
+    it('returns row 8 of current column', () => {
+      expect(getColumnEnd({ row: 3, col: 4 })).toEqual({ row: 8, col: 4 });
+    });
+
+    it('defaults to column 0 when current is null', () => {
+      expect(getColumnEnd(null)).toEqual({ row: 8, col: 0 });
     });
   });
 });

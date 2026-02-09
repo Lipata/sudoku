@@ -4,6 +4,7 @@ import { BoardComponent } from '../../components/board/board.component';
 import { NumberPadComponent } from '../../components/board/number-pad/number-pad.component';
 import { PopupComponent } from '../../components/board/popup/popup.component';
 import { CellInputComponent } from '../../components/board/cell-input/cell-input.component';
+import { KeyboardHintsComponent } from '../../components/board/keyboard-hints/keyboard-hints.component';
 import { SudokuApiService } from '../../../../core/services';
 import { Board, Difficulty, CellPosition } from '../../../../models';
 import { apiBoardToBoard, boardToApiBoard, createEmptyBoard } from '../../../../utils/board.util';
@@ -16,15 +17,19 @@ import {
   isTabKey,
   isHomeKey,
   isEndKey,
+  isPageUpKey,
+  isPageDownKey,
   getRowStart,
   getRowEnd,
+  getColumnStart,
+  getColumnEnd,
 } from '../../../../utils/keyboard.util';
 import { isValidPlacement, getInvalidNumbers } from '../../../../utils/validation.util';
 
 @Component({
   selector: 'app-game-page',
   standalone: true,
-  imports: [BoardComponent, NumberPadComponent, PopupComponent, CellInputComponent, TitleCasePipe],
+  imports: [BoardComponent, NumberPadComponent, PopupComponent, CellInputComponent, KeyboardHintsComponent, TitleCasePipe],
   templateUrl: './game-page.component.html',
 })
 export class GamePageComponent {
@@ -95,6 +100,18 @@ export class GamePageComponent {
     if (isEndKey(key)) {
       event.preventDefault();
       this.selectedCell.set(getRowEnd(this.selectedCell()));
+      return;
+    }
+
+    if (isPageUpKey(key)) {
+      event.preventDefault();
+      this.selectedCell.set(getColumnStart(this.selectedCell()));
+      return;
+    }
+
+    if (isPageDownKey(key)) {
+      event.preventDefault();
+      this.selectedCell.set(getColumnEnd(this.selectedCell()));
       return;
     }
 

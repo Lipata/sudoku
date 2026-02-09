@@ -1,3 +1,17 @@
+<!-- Keyboard hints - desktop only -->
+@if (gameStarted()) {
+  <!-- Navigation hints - top right, always visible -->
+  <div class="hidden md:block fixed top-4 right-4 z-10">
+    <app-keyboard-hints mode="navigation" />
+  </div>
+  <!-- Input hints - right center, only when cell selected -->
+  @if (selectedCell()) {
+    <div class="hidden md:block fixed top-1/2 -translate-y-1/2 right-4 z-10">
+      <app-keyboard-hints mode="input" />
+    </div>
+  }
+}
+
 <div class="min-h-screen bg-gray-50 py-8 px-4">
   <div class="max-w-md mx-auto">
     <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">Sudoku</h1>
@@ -87,9 +101,6 @@
             />
           </div>
         }
-        <p class="text-center text-gray-500 text-sm mt-4">
-          Arrows/WASD: navigate | Tab: next empty | Home/End: row start/end | Esc: deselect
-        </p>
       </div>
 
       <!-- Action buttons -->

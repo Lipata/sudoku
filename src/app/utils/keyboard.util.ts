@@ -63,3 +63,19 @@ export function getRowStart(current: CellPosition | null): CellPosition {
 export function getRowEnd(current: CellPosition | null): CellPosition {
   return { row: current?.row ?? 0, col: 8 };
 }
+
+export function isPageUpKey(key: string): boolean {
+  return key === 'PageUp';
+}
+
+export function isPageDownKey(key: string): boolean {
+  return key === 'PageDown';
+}
+
+export function getColumnStart(current: CellPosition | null): CellPosition {
+  return { row: 0, col: current?.col ?? 0 };
+}
+
+export function getColumnEnd(current: CellPosition | null): CellPosition {
+  return { row: 8, col: current?.col ?? 0 };
+}
