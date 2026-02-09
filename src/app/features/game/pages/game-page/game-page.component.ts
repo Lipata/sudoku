@@ -2,6 +2,7 @@ import { Component, HostListener, inject, signal } from '@angular/core';
 import { TitleCasePipe } from '@angular/common';
 import { BoardComponent } from '../../components/board/board.component';
 import { NumberPadComponent } from '../../components/board/number-pad/number-pad.component';
+import { PopupComponent } from '../../components/board/popup/popup.component';
 import { SudokuApiService } from '../../../../core/services';
 import { Board, Difficulty, CellPosition } from '../../../../models';
 import { apiBoardToBoard, boardToApiBoard, createEmptyBoard } from '../../../../utils/board.util';
@@ -11,7 +12,7 @@ import { isValidPlacement } from '../../../../utils/validation.util';
 @Component({
   selector: 'app-game-page',
   standalone: true,
-  imports: [BoardComponent, NumberPadComponent, TitleCasePipe],
+  imports: [BoardComponent, NumberPadComponent, PopupComponent, TitleCasePipe],
   templateUrl: './game-page.component.html',
 })
 export class GamePageComponent {
@@ -136,21 +137,16 @@ export class GamePageComponent {
       next: (response) => {
         this.validationStatus.set(response.status);
         this.isValidating.set(false);
-
-        // Auto-clear "broken" message after 3 seconds
-        if (response.status === 'broken') {
-          setTimeout(() => {
-            if (this.validationStatus() === 'broken') {
-              this.validationStatus.set(null);
-            }
-          }, 3000);
-        }
       },
       error: () => {
         this.error.set('Failed to validate puzzle');
         this.isValidating.set(false);
       },
     });
+  }
+
+  clearValidationStatus(): void {
+    this.validationStatus.set(null);
   }
 
   requestAction(action: 'solve' | 'newGame'): void {

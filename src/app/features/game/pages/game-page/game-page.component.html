@@ -73,74 +73,55 @@
         </p>
       </div>
 
-      <!-- Validation status -->
-      @if (validationStatus()) {
-        <div
-          class="mt-4 py-3 px-4 rounded-lg text-center font-medium"
-          [class]="validationStatus() === 'solved'
-            ? 'bg-green-100 text-green-800'
-            : 'bg-red-100 text-red-800'"
-        >
-          @if (validationStatus() === 'solved') {
-            Congratulations! Puzzle solved correctly!
-          } @else {
-            Some cells are incorrect. Keep trying!
-          }
-        </div>
-      }
-
-      <!-- Confirmation dialog -->
-      @if (pendingAction()) {
-        <div class="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-          <p class="text-center text-yellow-800 mb-3">
-            @if (pendingAction() === 'solve') {
-              Are you sure you want to reveal the solution?
-            } @else {
-              Are you sure you want to start a new game?
-            }
-          </p>
-          <div class="flex gap-2">
-            <button
-              class="flex-1 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600"
-              (click)="confirmAction()"
-            >
-              Yes
-            </button>
-            <button
-              class="flex-1 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500"
-              (click)="cancelAction()"
-            >
-              No
-            </button>
-          </div>
-        </div>
-      }
-
       <!-- Action buttons -->
-      @if (!pendingAction()) {
-        <div class="flex gap-2 mt-4">
-          <button
-            class="flex-1 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 active:bg-green-800 disabled:opacity-50"
-            [disabled]="isValidating() || isSolving()"
-            (click)="validateBoard()"
-          >
-            {{ isValidating() ? 'Validating...' : 'Validate' }}
-          </button>
-          <button
-            class="px-3 py-2 text-xs bg-gray-500 text-white rounded-lg hover:bg-gray-600 active:bg-gray-700 disabled:opacity-50"
-            [disabled]="isValidating() || isSolving()"
-            (click)="requestAction('solve')"
-          >
-            {{ isSolving() ? '...' : 'Solve' }}
-          </button>
-          <button
-            class="px-3 py-2 text-xs bg-gray-600 text-white rounded-lg hover:bg-gray-700 active:bg-gray-800"
-            (click)="requestAction('newGame')"
-          >
-            New
-          </button>
-        </div>
-      }
+      <div class="flex gap-2 mt-4">
+        <button
+          class="flex-1 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 active:bg-green-800 disabled:opacity-50"
+          [disabled]="isValidating() || isSolving()"
+          (click)="validateBoard()"
+        >
+          {{ isValidating() ? 'Validating...' : 'Validate' }}
+        </button>
+        <button
+          class="px-3 py-2 text-xs bg-gray-500 text-white rounded-lg hover:bg-gray-600 active:bg-gray-700 disabled:opacity-50"
+          [disabled]="isValidating() || isSolving()"
+          (click)="requestAction('solve')"
+        >
+          {{ isSolving() ? '...' : 'Solve' }}
+        </button>
+        <button
+          class="px-3 py-2 text-xs bg-gray-600 text-white rounded-lg hover:bg-gray-700 active:bg-gray-800"
+          (click)="requestAction('newGame')"
+        >
+          New
+        </button>
+      </div>
     }
   </div>
 </div>
+
+<!-- Validation popup -->
+@if (validationStatus()) {
+  <app-popup
+    type="message"
+    [variant]="validationStatus() === 'solved' ? 'success' : 'error'"
+    [message]="validationStatus() === 'solved'
+      ? 'Congratulations! Puzzle solved correctly!'
+      : 'Some cells are incorrect. Keep trying!'"
+    [autoHideMs]="2000"
+    (closed)="clearValidationStatus()"
+  />
+}
+
+<!-- Confirmation popup -->
+@if (pendingAction()) {
+  <app-popup
+    type="confirm"
+    variant="warning"
+    [message]="pendingAction() === 'solve'
+      ? 'Are you sure you want to reveal the solution?'
+      : 'Are you sure you want to start a new game?'"
+    (confirmed)="confirmAction()"
+    (cancelled)="cancelAction()"
+  />
+}
