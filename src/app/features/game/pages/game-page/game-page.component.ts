@@ -4,7 +4,7 @@ import { BoardComponent } from '../../components/board/board.component';
 import { NumberPadComponent } from '../../components/board/number-pad/number-pad.component';
 import { SudokuApiService } from '../../../../core/services';
 import { Board, Difficulty, CellPosition } from '../../../../models';
-import { apiBoardToBoard, createEmptyBoard } from '../../../../utils/board.util';
+import { apiBoardToBoard, boardToApiBoard, createEmptyBoard } from '../../../../utils/board.util';
 import { isNavigationKey, getNextPosition, isNumberKey, isClearKey } from '../../../../utils/keyboard.util';
 import { isValidPlacement } from '../../../../utils/validation.util';
 
@@ -17,14 +17,25 @@ import { isValidPlacement } from '../../../../utils/validation.util';
 export class GamePageComponent {
   private readonly api = inject(SudokuApiService);
 
+  // Game state
   board = signal<Board>(createEmptyBoard());
-  isLoading = signal(false);
-  error = signal<string | null>(null);
   gameStarted = signal(false);
   selectedDifficulty = signal<Difficulty | null>(null);
+
+  // Cell selection
   selectedCell = signal<CellPosition | null>(null);
   invalidCell = signal<CellPosition | null>(null);
+
+  // Loading and status
+  isLoading = signal(false);
+  isValidating = signal(false);
+  isSolving = signal(false);
+  error = signal<string | null>(null);
+  validationStatus = signal<'solved' | 'broken' | null>(null);
+
+  // UI
   showNumberPad = signal(false);
+  pendingAction = signal<'solve' | 'newGame' | null>(null);
 
   readonly difficulties: Difficulty[] = ['easy', 'medium', 'hard', 'random'];
 
@@ -114,5 +125,71 @@ export class GamePageComponent {
   backToMenu(): void {
     this.gameStarted.set(false);
     this.error.set(null);
+    this.validationStatus.set(null);
+  }
+
+  validateBoard(): void {
+    this.isValidating.set(true);
+    this.validationStatus.set(null);
+
+    this.api.validate(boardToApiBoard(this.board())).subscribe({
+      next: (response) => {
+        this.validationStatus.set(response.status);
+        this.isValidating.set(false);
+
+        // Auto-clear "broken" message after 3 seconds
+        if (response.status === 'broken') {
+          setTimeout(() => {
+            if (this.validationStatus() === 'broken') {
+              this.validationStatus.set(null);
+            }
+          }, 3000);
+        }
+      },
+      error: () => {
+        this.error.set('Failed to validate puzzle');
+        this.isValidating.set(false);
+      },
+    });
+  }
+
+  requestAction(action: 'solve' | 'newGame'): void {
+    this.pendingAction.set(action);
+  }
+
+  confirmAction(): void {
+    const action = this.pendingAction();
+    this.pendingAction.set(null);
+
+    if (action === 'solve') {
+      this.solveBoard();
+    } else if (action === 'newGame') {
+      this.backToMenu();
+    }
+  }
+
+  cancelAction(): void {
+    this.pendingAction.set(null);
+  }
+
+  private solveBoard(): void {
+    this.isSolving.set(true);
+    this.validationStatus.set(null);
+
+    this.api.solve(boardToApiBoard(this.board())).subscribe({
+      next: (response) => {
+        if (response.status === 'solved') {
+          this.board.set(apiBoardToBoard(response.solution));
+          this.validationStatus.set('solved');
+        } else {
+          this.error.set('Puzzle cannot be solved');
+        }
+        this.isSolving.set(false);
+      },
+      error: () => {
+        this.error.set('Failed to solve puzzle');
+        this.isSolving.set(false);
+      },
+    });
   }
 }

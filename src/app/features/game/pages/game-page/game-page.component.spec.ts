@@ -1,8 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
+import { of, throwError } from 'rxjs';
 import { GamePageComponent } from './game-page.component';
 import { SudokuApiService } from '../../../../core/services';
-import { Board } from '../../../../models';
+import { Board, ApiBoard } from '../../../../models';
 
 function createTestBoard(): Board {
   return Array.from({ length: 9 }, () =>
@@ -10,13 +11,28 @@ function createTestBoard(): Board {
   );
 }
 
+function createTestApiBoard(): ApiBoard {
+  return Array.from({ length: 9 }, () => Array.from({ length: 9 }, () => 0));
+}
+
 describe('GamePageComponent', () => {
   let component: GamePageComponent;
+  let mockApiService: {
+    validate: ReturnType<typeof vi.fn>;
+    solve: ReturnType<typeof vi.fn>;
+    getBoard: ReturnType<typeof vi.fn>;
+  };
 
   beforeEach(() => {
+    mockApiService = {
+      validate: vi.fn(),
+      solve: vi.fn(),
+      getBoard: vi.fn(),
+    };
+
     TestBed.configureTestingModule({
       providers: [
-        { provide: SudokuApiService, useValue: {} },
+        { provide: SudokuApiService, useValue: mockApiService },
       ],
     });
 
@@ -197,6 +213,108 @@ describe('GamePageComponent', () => {
       component.error.set('Some error');
       component.backToMenu();
       expect(component.error()).toBeNull();
+    });
+
+    it('clears validationStatus', () => {
+      component.validationStatus.set('solved');
+      component.backToMenu();
+      expect(component.validationStatus()).toBeNull();
+    });
+  });
+
+  describe('validateBoard', () => {
+    it('sets isValidating to true while validating', () => {
+      mockApiService.validate.mockReturnValue(of({ status: 'solved' }));
+
+      component.validateBoard();
+
+      expect(mockApiService.validate).toHaveBeenCalled();
+    });
+
+    it('sets validationStatus to solved on success', () => {
+      mockApiService.validate.mockReturnValue(of({ status: 'solved' }));
+
+      component.validateBoard();
+
+      expect(component.validationStatus()).toBe('solved');
+      expect(component.isValidating()).toBe(false);
+    });
+
+    it('sets validationStatus to broken for invalid board', () => {
+      mockApiService.validate.mockReturnValue(of({ status: 'broken' }));
+
+      component.validateBoard();
+
+      expect(component.validationStatus()).toBe('broken');
+      expect(component.isValidating()).toBe(false);
+    });
+
+    it('sets error on API failure', () => {
+      mockApiService.validate.mockReturnValue(throwError(() => new Error('API Error')));
+
+      component.validateBoard();
+
+      expect(component.error()).toBe('Failed to validate puzzle');
+      expect(component.isValidating()).toBe(false);
+    });
+  });
+
+  describe('solveBoard (via confirmation)', () => {
+    it('updates board with solution on success', () => {
+      const solutionBoard = createTestApiBoard();
+      solutionBoard[0][0] = 5;
+      mockApiService.solve.mockReturnValue(of({
+        status: 'solved',
+        solution: solutionBoard,
+        difficulty: 'easy',
+      }));
+
+      component.requestAction('solve');
+      component.confirmAction();
+
+      expect(component.board()[0][0].value).toBe(5);
+      expect(component.validationStatus()).toBe('solved');
+      expect(component.isSolving()).toBe(false);
+    });
+
+    it('sets error for unsolvable board', () => {
+      mockApiService.solve.mockReturnValue(of({ status: 'unsolvable' }));
+
+      component.requestAction('solve');
+      component.confirmAction();
+
+      expect(component.error()).toBe('Puzzle cannot be solved');
+      expect(component.isSolving()).toBe(false);
+    });
+
+    it('sets error on API failure', () => {
+      mockApiService.solve.mockReturnValue(throwError(() => new Error('API Error')));
+
+      component.requestAction('solve');
+      component.confirmAction();
+
+      expect(component.error()).toBe('Failed to solve puzzle');
+      expect(component.isSolving()).toBe(false);
+    });
+  });
+
+  describe('requestAction and confirmAction', () => {
+    it('sets pendingAction when requestAction is called', () => {
+      component.requestAction('solve');
+      expect(component.pendingAction()).toBe('solve');
+    });
+
+    it('clears pendingAction when cancelAction is called', () => {
+      component.requestAction('solve');
+      component.cancelAction();
+      expect(component.pendingAction()).toBeNull();
+    });
+
+    it('calls backToMenu when confirming newGame', () => {
+      component.gameStarted.set(true);
+      component.requestAction('newGame');
+      component.confirmAction();
+      expect(component.gameStarted()).toBe(false);
     });
   });
 

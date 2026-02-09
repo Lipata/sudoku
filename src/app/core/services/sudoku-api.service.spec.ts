@@ -85,4 +85,51 @@ describe('SudokuApiService', () => {
       req.flush({ board: mockBoard });
     });
   });
+
+  describe('validate', () => {
+    it('should post board and return solved status', () => {
+      service.validate(mockBoard).subscribe((response) => {
+        expect(response.status).toBe('solved');
+      });
+
+      const req = httpMock.expectOne('https://sugoku.onrender.com/validate');
+      expect(req.request.method).toBe('POST');
+      expect(req.request.headers.get('Content-Type')).toBe('application/x-www-form-urlencoded');
+      req.flush({ status: 'solved' });
+    });
+
+    it('should return broken status for invalid board', () => {
+      service.validate(mockBoard).subscribe((response) => {
+        expect(response.status).toBe('broken');
+      });
+
+      const req = httpMock.expectOne('https://sugoku.onrender.com/validate');
+      req.flush({ status: 'broken' });
+    });
+  });
+
+  describe('solve', () => {
+    it('should post board and return solution', () => {
+      const solvedBoard: ApiBoard = mockBoard.map(row => row.map(cell => cell || 1));
+
+      service.solve(mockBoard).subscribe((response) => {
+        expect(response.status).toBe('solved');
+        expect(response.solution).toEqual(solvedBoard);
+      });
+
+      const req = httpMock.expectOne('https://sugoku.onrender.com/solve');
+      expect(req.request.method).toBe('POST');
+      expect(req.request.headers.get('Content-Type')).toBe('application/x-www-form-urlencoded');
+      req.flush({ status: 'solved', solution: solvedBoard, difficulty: 'easy' });
+    });
+
+    it('should return unsolvable status for broken board', () => {
+      service.solve(mockBoard).subscribe((response) => {
+        expect(response.status).toBe('unsolvable');
+      });
+
+      const req = httpMock.expectOne('https://sugoku.onrender.com/solve');
+      req.flush({ status: 'unsolvable' });
+    });
+  });
 });
