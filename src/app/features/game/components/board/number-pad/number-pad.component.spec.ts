@@ -1,11 +1,12 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { TestBed } from '@angular/core/testing';
 import { NumberPadComponent } from './number-pad.component';
 
 describe('NumberPadComponent', () => {
   let component: NumberPadComponent;
 
   beforeEach(() => {
-    component = new NumberPadComponent();
+    component = TestBed.runInInjectionContext(() => new NumberPadComponent());
   });
 
   describe('numbers array', () => {
