@@ -186,6 +186,20 @@ describe('GamePageComponent', () => {
     });
   });
 
+  describe('backToMenu', () => {
+    it('sets gameStarted to false', () => {
+      component.gameStarted.set(true);
+      component.backToMenu();
+      expect(component.gameStarted()).toBe(false);
+    });
+
+    it('clears error', () => {
+      component.error.set('Some error');
+      component.backToMenu();
+      expect(component.error()).toBeNull();
+    });
+  });
+
   describe('onKeyDown', () => {
     it('ignores keys when game not started', () => {
       component.gameStarted.set(false);
