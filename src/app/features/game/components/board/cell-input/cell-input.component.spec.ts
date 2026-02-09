@@ -74,7 +74,7 @@ describe('CellInputComponent', () => {
 
   describe('template', () => {
     it('should render available number buttons', () => {
-      const buttons = fixture.nativeElement.querySelectorAll('.grid button');
+      const buttons = fixture.nativeElement.querySelectorAll('.cell-input-number');
       expect(buttons.length).toBe(9);
       expect(buttons[0].textContent.trim()).toBe('1');
       expect(buttons[8].textContent.trim()).toBe('9');
@@ -84,20 +84,20 @@ describe('CellInputComponent', () => {
       fixture.componentRef.setInput('disabledNumbers', [1, 2, 3]);
       fixture.detectChanges();
 
-      const buttons = fixture.nativeElement.querySelectorAll('.grid button');
+      const buttons = fixture.nativeElement.querySelectorAll('.cell-input-number');
       expect(buttons.length).toBe(6);
       expect(buttons[0].textContent.trim()).toBe('4');
     });
 
     it('should render Clear button', () => {
-      const clearButton = fixture.nativeElement.querySelector('button.bg-gray-400');
+      const clearButton = fixture.nativeElement.querySelector('.cell-input-clear');
       expect(clearButton).toBeTruthy();
       expect(clearButton.textContent.trim()).toBe('Clear');
     });
 
     it('should call onSelect when number button clicked', () => {
       const spy = vi.spyOn(component, 'onSelect');
-      const buttons = fixture.nativeElement.querySelectorAll('.grid button');
+      const buttons = fixture.nativeElement.querySelectorAll('.cell-input-number');
 
       buttons[0].click();
 
@@ -106,7 +106,7 @@ describe('CellInputComponent', () => {
 
     it('should call onClear when Clear button clicked', () => {
       const spy = vi.spyOn(component, 'onClear');
-      const clearButton = fixture.nativeElement.querySelector('button.bg-gray-400');
+      const clearButton = fixture.nativeElement.querySelector('.cell-input-clear');
 
       clearButton.click();
 
@@ -115,7 +115,7 @@ describe('CellInputComponent', () => {
 
     it('should call onBackdropClick when backdrop clicked', () => {
       const spy = vi.spyOn(component, 'onBackdropClick');
-      const backdrop = fixture.nativeElement.querySelector('.fixed');
+      const backdrop = fixture.nativeElement.querySelector('.cell-input-backdrop');
 
       backdrop.click();
 
@@ -124,7 +124,7 @@ describe('CellInputComponent', () => {
 
     it('should not call onBackdropClick when popup content clicked', () => {
       const spy = vi.spyOn(component, 'onBackdropClick');
-      const popup = fixture.nativeElement.querySelector('.bg-white');
+      const popup = fixture.nativeElement.querySelector('.cell-input-popup');
 
       popup.click();
 

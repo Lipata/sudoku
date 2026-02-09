@@ -1,15 +1,15 @@
 <div
-  class="fixed inset-0 bg-black/20 flex items-end justify-center z-50 pb-8"
+  class="cell-input-backdrop fixed inset-0 bg-black/20 flex items-end justify-center z-50 pb-8"
   (click)="onBackdropClick()"
 >
   <div
-    class="bg-white/95 backdrop-blur-sm rounded-xl shadow-xl p-4"
+    class="cell-input-popup bg-white/95 backdrop-blur-sm rounded-xl shadow-xl p-4"
     (click)="$event.stopPropagation()"
   >
-    <div class="grid grid-cols-3 gap-2">
+    <div class="cell-input-numbers grid grid-cols-3 gap-2">
       @for (num of availableNumbers(); track num) {
         <button
-          class="w-14 h-14 text-2xl font-bold bg-blue-500 text-white rounded-lg active:bg-blue-600"
+          class="cell-input-number w-14 h-14 text-2xl font-bold bg-blue-500 text-white rounded-lg active:bg-blue-600"
           (click)="onSelect(num)"
         >
           {{ num }}
@@ -17,7 +17,7 @@
       }
     </div>
     <button
-      class="w-full mt-2 py-3 text-lg font-medium bg-gray-400 text-white rounded-lg active:bg-gray-500"
+      class="cell-input-clear w-full mt-2 py-3 text-lg font-medium bg-gray-400 text-white rounded-lg active:bg-gray-500"
       (click)="onClear()"
     >
       Clear
