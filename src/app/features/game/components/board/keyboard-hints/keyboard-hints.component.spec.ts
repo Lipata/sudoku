@@ -5,6 +5,11 @@ describe('KeyboardHintsComponent', () => {
   let component: KeyboardHintsComponent;
   let fixture: ComponentFixture<KeyboardHintsComponent>;
 
+  const getKeyTexts = (): string[] => {
+    const keys = fixture.nativeElement.querySelectorAll('.key') as NodeListOf<HTMLElement>;
+    return Array.from(keys).map(k => k.textContent?.trim() ?? '');
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [KeyboardHintsComponent],
@@ -26,8 +31,7 @@ describe('KeyboardHintsComponent', () => {
     });
 
     it('should show WASD keys', () => {
-      const keys = fixture.nativeElement.querySelectorAll('.key');
-      const keyTexts = Array.from(keys).map((k: Element) => k.textContent?.trim());
+      const keyTexts = getKeyTexts();
       expect(keyTexts).toContain('W');
       expect(keyTexts).toContain('A');
       expect(keyTexts).toContain('S');
@@ -35,8 +39,7 @@ describe('KeyboardHintsComponent', () => {
     });
 
     it('should show arrow keys', () => {
-      const keys = fixture.nativeElement.querySelectorAll('.key');
-      const keyTexts = Array.from(keys).map((k: Element) => k.textContent?.trim());
+      const keyTexts = getKeyTexts();
       expect(keyTexts).toContain('↑');
       expect(keyTexts).toContain('←');
       expect(keyTexts).toContain('↓');
@@ -44,28 +47,24 @@ describe('KeyboardHintsComponent', () => {
     });
 
     it('should show Tab key', () => {
-      const keys = fixture.nativeElement.querySelectorAll('.key');
-      const keyTexts = Array.from(keys).map((k: Element) => k.textContent?.trim());
+      const keyTexts = getKeyTexts();
       expect(keyTexts).toContain('Tab');
     });
 
     it('should show Home and End keys', () => {
-      const keys = fixture.nativeElement.querySelectorAll('.key');
-      const keyTexts = Array.from(keys).map((k: Element) => k.textContent?.trim());
+      const keyTexts = getKeyTexts();
       expect(keyTexts).toContain('Home');
       expect(keyTexts).toContain('End');
     });
 
     it('should show PgUp and PgDn keys', () => {
-      const keys = fixture.nativeElement.querySelectorAll('.key');
-      const keyTexts = Array.from(keys).map((k: Element) => k.textContent?.trim());
+      const keyTexts = getKeyTexts();
       expect(keyTexts).toContain('PgUp');
       expect(keyTexts).toContain('PgDn');
     });
 
     it('should not show number keys', () => {
-      const keys = fixture.nativeElement.querySelectorAll('.key');
-      const keyTexts = Array.from(keys).map((k: Element) => k.textContent?.trim());
+      const keyTexts = getKeyTexts();
       expect(keyTexts).not.toContain('1');
       expect(keyTexts).not.toContain('9');
     });
@@ -78,27 +77,23 @@ describe('KeyboardHintsComponent', () => {
     });
 
     it('should show number keys 1 and 9', () => {
-      const keys = fixture.nativeElement.querySelectorAll('.key');
-      const keyTexts = Array.from(keys).map((k: Element) => k.textContent?.trim());
+      const keyTexts = getKeyTexts();
       expect(keyTexts).toContain('1');
       expect(keyTexts).toContain('9');
     });
 
     it('should show backspace key', () => {
-      const keys = fixture.nativeElement.querySelectorAll('.key');
-      const keyTexts = Array.from(keys).map((k: Element) => k.textContent?.trim());
+      const keyTexts = getKeyTexts();
       expect(keyTexts).toContain('⌫');
     });
 
     it('should show Esc key', () => {
-      const keys = fixture.nativeElement.querySelectorAll('.key');
-      const keyTexts = Array.from(keys).map((k: Element) => k.textContent?.trim());
+      const keyTexts = getKeyTexts();
       expect(keyTexts).toContain('Esc');
     });
 
     it('should not show WASD keys', () => {
-      const keys = fixture.nativeElement.querySelectorAll('.key');
-      const keyTexts = Array.from(keys).map((k: Element) => k.textContent?.trim());
+      const keyTexts = getKeyTexts();
       expect(keyTexts).not.toContain('W');
       expect(keyTexts).not.toContain('A');
       expect(keyTexts).not.toContain('S');
