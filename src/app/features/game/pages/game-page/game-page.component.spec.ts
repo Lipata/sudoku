@@ -343,7 +343,7 @@ describe('GamePageComponent', () => {
     it('handles WASD navigation', () => {
       component.selectedCell.set({ row: 4, col: 4 });
 
-      const event = new KeyboardEvent('keydown', { key: 's' });
+      const event = new KeyboardEvent('keydown', { key: 's', code: 'KeyS' });
       component.onKeyDown(event);
 
       expect(component.selectedCell()).toEqual({ row: 5, col: 4 });

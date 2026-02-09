@@ -9,7 +9,7 @@ import { SudokuApiService } from '../../../../core/services';
 import { Board, Difficulty, CellPosition } from '../../../../models';
 import { apiBoardToBoard, boardToApiBoard, createEmptyBoard } from '../../../../utils/board.util';
 import {
-  isNavigationKey,
+  getNavigationKey,
   getNextPosition,
   isNumberKey,
   isClearKey,
@@ -70,10 +70,11 @@ export class GamePageComponent {
     if (!this.gameStarted()) return;
 
     const key = event.key;
+    const navKey = getNavigationKey(event);
 
-    if (isNavigationKey(key)) {
+    if (navKey) {
       event.preventDefault();
-      this.selectedCell.set(getNextPosition(this.selectedCell(), key));
+      this.selectedCell.set(getNextPosition(this.selectedCell(), navKey));
       return;
     }
 

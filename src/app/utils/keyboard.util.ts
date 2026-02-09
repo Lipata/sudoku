@@ -1,24 +1,32 @@
 import { CellPosition } from '../models';
 
-type NavigationKey = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight' | 'w' | 'a' | 's' | 'd' | 'W' | 'A' | 'S' | 'D';
+type ArrowKey = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight';
+type WASDCode = 'KeyW' | 'KeyA' | 'KeyS' | 'KeyD';
+type NavigationKey = ArrowKey | WASDCode;
 
 const NAVIGATION_KEYS: Record<NavigationKey, { row: number; col: number }> = {
   ArrowUp: { row: -1, col: 0 },
   ArrowDown: { row: 1, col: 0 },
   ArrowLeft: { row: 0, col: -1 },
   ArrowRight: { row: 0, col: 1 },
-  w: { row: -1, col: 0 },
-  W: { row: -1, col: 0 },
-  s: { row: 1, col: 0 },
-  S: { row: 1, col: 0 },
-  a: { row: 0, col: -1 },
-  A: { row: 0, col: -1 },
-  d: { row: 0, col: 1 },
-  D: { row: 0, col: 1 },
+  KeyW: { row: -1, col: 0 },
+  KeyS: { row: 1, col: 0 },
+  KeyA: { row: 0, col: -1 },
+  KeyD: { row: 0, col: 1 },
 };
 
-export function isNavigationKey(key: string): key is NavigationKey {
-  return key in NAVIGATION_KEYS;
+export function isNavigationKey(keyOrCode: string): keyOrCode is NavigationKey {
+  return keyOrCode in NAVIGATION_KEYS;
+}
+
+export function getNavigationKey(event: KeyboardEvent): NavigationKey | null {
+  if (event.key in NAVIGATION_KEYS) {
+    return event.key as NavigationKey;
+  }
+  if (event.code in NAVIGATION_KEYS) {
+    return event.code as NavigationKey;
+  }
+  return null;
 }
 
 export function getNextPosition(current: CellPosition | null, key: NavigationKey): CellPosition {

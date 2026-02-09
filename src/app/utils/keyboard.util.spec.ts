@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   isNavigationKey,
+  getNavigationKey,
   getNextPosition,
   isNumberKey,
   isClearKey,
@@ -25,15 +26,11 @@ describe('keyboard.util', () => {
       expect(isNavigationKey('ArrowRight')).toBe(true);
     });
 
-    it('returns true for WASD keys', () => {
-      expect(isNavigationKey('w')).toBe(true);
-      expect(isNavigationKey('a')).toBe(true);
-      expect(isNavigationKey('s')).toBe(true);
-      expect(isNavigationKey('d')).toBe(true);
-      expect(isNavigationKey('W')).toBe(true);
-      expect(isNavigationKey('A')).toBe(true);
-      expect(isNavigationKey('S')).toBe(true);
-      expect(isNavigationKey('D')).toBe(true);
+    it('returns true for WASD key codes', () => {
+      expect(isNavigationKey('KeyW')).toBe(true);
+      expect(isNavigationKey('KeyA')).toBe(true);
+      expect(isNavigationKey('KeyS')).toBe(true);
+      expect(isNavigationKey('KeyD')).toBe(true);
     });
 
     it('returns false for other keys', () => {
@@ -44,29 +41,57 @@ describe('keyboard.util', () => {
     });
   });
 
+  describe('getNavigationKey', () => {
+    const createKeyboardEvent = (key: string, code: string): KeyboardEvent => {
+      return { key, code } as KeyboardEvent;
+    };
+
+    it('returns arrow key from event.key', () => {
+      expect(getNavigationKey(createKeyboardEvent('ArrowUp', 'ArrowUp'))).toBe('ArrowUp');
+      expect(getNavigationKey(createKeyboardEvent('ArrowDown', 'ArrowDown'))).toBe('ArrowDown');
+      expect(getNavigationKey(createKeyboardEvent('ArrowLeft', 'ArrowLeft'))).toBe('ArrowLeft');
+      expect(getNavigationKey(createKeyboardEvent('ArrowRight', 'ArrowRight'))).toBe('ArrowRight');
+    });
+
+    it('returns WASD from event.code (works on any keyboard layout)', () => {
+      expect(getNavigationKey(createKeyboardEvent('w', 'KeyW'))).toBe('KeyW');
+      expect(getNavigationKey(createKeyboardEvent('a', 'KeyA'))).toBe('KeyA');
+      expect(getNavigationKey(createKeyboardEvent('s', 'KeyS'))).toBe('KeyS');
+      expect(getNavigationKey(createKeyboardEvent('d', 'KeyD'))).toBe('KeyD');
+    });
+
+    it('works on non-English keyboard layouts (e.g., French AZERTY)', () => {
+      // On French keyboard, physical W key produces 'z'
+      expect(getNavigationKey(createKeyboardEvent('z', 'KeyW'))).toBe('KeyW');
+      // On French keyboard, physical A key produces 'q'
+      expect(getNavigationKey(createKeyboardEvent('q', 'KeyA'))).toBe('KeyA');
+    });
+
+    it('returns null for non-navigation keys', () => {
+      expect(getNavigationKey(createKeyboardEvent('Enter', 'Enter'))).toBe(null);
+      expect(getNavigationKey(createKeyboardEvent('1', 'Digit1'))).toBe(null);
+    });
+  });
+
   describe('getNextPosition', () => {
     it('moves up correctly', () => {
       expect(getNextPosition({ row: 5, col: 3 }, 'ArrowUp')).toEqual({ row: 4, col: 3 });
-      expect(getNextPosition({ row: 5, col: 3 }, 'w')).toEqual({ row: 4, col: 3 });
-      expect(getNextPosition({ row: 5, col: 3 }, 'W')).toEqual({ row: 4, col: 3 });
+      expect(getNextPosition({ row: 5, col: 3 }, 'KeyW')).toEqual({ row: 4, col: 3 });
     });
 
     it('moves down correctly', () => {
       expect(getNextPosition({ row: 5, col: 3 }, 'ArrowDown')).toEqual({ row: 6, col: 3 });
-      expect(getNextPosition({ row: 5, col: 3 }, 's')).toEqual({ row: 6, col: 3 });
-      expect(getNextPosition({ row: 5, col: 3 }, 'S')).toEqual({ row: 6, col: 3 });
+      expect(getNextPosition({ row: 5, col: 3 }, 'KeyS')).toEqual({ row: 6, col: 3 });
     });
 
     it('moves left correctly', () => {
       expect(getNextPosition({ row: 5, col: 3 }, 'ArrowLeft')).toEqual({ row: 5, col: 2 });
-      expect(getNextPosition({ row: 5, col: 3 }, 'a')).toEqual({ row: 5, col: 2 });
-      expect(getNextPosition({ row: 5, col: 3 }, 'A')).toEqual({ row: 5, col: 2 });
+      expect(getNextPosition({ row: 5, col: 3 }, 'KeyA')).toEqual({ row: 5, col: 2 });
     });
 
     it('moves right correctly', () => {
       expect(getNextPosition({ row: 5, col: 3 }, 'ArrowRight')).toEqual({ row: 5, col: 4 });
-      expect(getNextPosition({ row: 5, col: 3 }, 'd')).toEqual({ row: 5, col: 4 });
-      expect(getNextPosition({ row: 5, col: 3 }, 'D')).toEqual({ row: 5, col: 4 });
+      expect(getNextPosition({ row: 5, col: 3 }, 'KeyD')).toEqual({ row: 5, col: 4 });
     });
 
     it('clamps to top boundary', () => {
