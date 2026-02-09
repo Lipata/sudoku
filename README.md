@@ -8,7 +8,7 @@ A modern Sudoku game built with Angular.
 
 - **Difficulty levels**: Easy, Medium, Hard, and Random
 - **Easy mode assistance**: Invalid numbers are highlighted in red and automatically disappear
-- **Keyboard navigation**: Use Arrow keys or WASD to navigate, 1-9 to enter numbers, Backspace to clear
+- **Keyboard navigation**: Arrow keys or WASD to navigate, Tab/Shift+Tab for next/previous empty cell, Home/End for row start/end, Escape to deselect, 1-9 to enter numbers, Backspace to clear
 - **Click to select**: Click any cell to select it
 - **Mobile cell input popup**: Tap a cell to open a number picker popup; in Easy mode, invalid numbers are filtered out
 - **Desktop number pad**: Collapsible number pad for mouse/touch input

@@ -4,6 +4,12 @@ import {
   getNextPosition,
   isNumberKey,
   isClearKey,
+  isEscapeKey,
+  isTabKey,
+  isHomeKey,
+  isEndKey,
+  getRowStart,
+  getRowEnd,
 } from './keyboard.util';
 
 describe('keyboard.util', () => {
@@ -110,6 +116,67 @@ describe('keyboard.util', () => {
     it('returns false for other keys', () => {
       expect(isClearKey('Escape')).toBe(false);
       expect(isClearKey('0')).toBe(false);
+    });
+  });
+
+  describe('isEscapeKey', () => {
+    it('returns true for Escape', () => {
+      expect(isEscapeKey('Escape')).toBe(true);
+    });
+
+    it('returns false for other keys', () => {
+      expect(isEscapeKey('Enter')).toBe(false);
+      expect(isEscapeKey('Esc')).toBe(false);
+    });
+  });
+
+  describe('isTabKey', () => {
+    it('returns true for Tab', () => {
+      expect(isTabKey('Tab')).toBe(true);
+    });
+
+    it('returns false for other keys', () => {
+      expect(isTabKey('Enter')).toBe(false);
+    });
+  });
+
+  describe('isHomeKey', () => {
+    it('returns true for Home', () => {
+      expect(isHomeKey('Home')).toBe(true);
+    });
+
+    it('returns false for other keys', () => {
+      expect(isHomeKey('End')).toBe(false);
+    });
+  });
+
+  describe('isEndKey', () => {
+    it('returns true for End', () => {
+      expect(isEndKey('End')).toBe(true);
+    });
+
+    it('returns false for other keys', () => {
+      expect(isEndKey('Home')).toBe(false);
+    });
+  });
+
+  describe('getRowStart', () => {
+    it('returns column 0 of current row', () => {
+      expect(getRowStart({ row: 5, col: 7 })).toEqual({ row: 5, col: 0 });
+    });
+
+    it('defaults to row 0 when current is null', () => {
+      expect(getRowStart(null)).toEqual({ row: 0, col: 0 });
+    });
+  });
+
+  describe('getRowEnd', () => {
+    it('returns column 8 of current row', () => {
+      expect(getRowEnd({ row: 3, col: 2 })).toEqual({ row: 3, col: 8 });
+    });
+
+    it('defaults to row 0 when current is null', () => {
+      expect(getRowEnd(null)).toEqual({ row: 0, col: 8 });
     });
   });
 });

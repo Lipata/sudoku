@@ -39,3 +39,27 @@ export function isNumberKey(key: string): boolean {
 export function isClearKey(key: string): boolean {
   return key === 'Backspace' || key === 'Delete';
 }
+
+export function isEscapeKey(key: string): boolean {
+  return key === 'Escape';
+}
+
+export function isTabKey(key: string): boolean {
+  return key === 'Tab';
+}
+
+export function isHomeKey(key: string): boolean {
+  return key === 'Home';
+}
+
+export function isEndKey(key: string): boolean {
+  return key === 'End';
+}
+
+export function getRowStart(current: CellPosition | null): CellPosition {
+  return { row: current?.row ?? 0, col: 0 };
+}
+
+export function getRowEnd(current: CellPosition | null): CellPosition {
+  return { row: current?.row ?? 0, col: 8 };
+}

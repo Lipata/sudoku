@@ -7,7 +7,18 @@ import { CellInputComponent } from '../../components/board/cell-input/cell-input
 import { SudokuApiService } from '../../../../core/services';
 import { Board, Difficulty, CellPosition } from '../../../../models';
 import { apiBoardToBoard, boardToApiBoard, createEmptyBoard } from '../../../../utils/board.util';
-import { isNavigationKey, getNextPosition, isNumberKey, isClearKey } from '../../../../utils/keyboard.util';
+import {
+  isNavigationKey,
+  getNextPosition,
+  isNumberKey,
+  isClearKey,
+  isEscapeKey,
+  isTabKey,
+  isHomeKey,
+  isEndKey,
+  getRowStart,
+  getRowEnd,
+} from '../../../../utils/keyboard.util';
 import { isValidPlacement, getInvalidNumbers } from '../../../../utils/validation.util';
 
 @Component({
@@ -61,6 +72,32 @@ export class GamePageComponent {
       return;
     }
 
+    if (isEscapeKey(key)) {
+      this.selectedCell.set(null);
+      return;
+    }
+
+    if (isTabKey(key)) {
+      event.preventDefault();
+      const nextEmpty = this.findNextEmptyCell(event.shiftKey);
+      if (nextEmpty) {
+        this.selectedCell.set(nextEmpty);
+      }
+      return;
+    }
+
+    if (isHomeKey(key)) {
+      event.preventDefault();
+      this.selectedCell.set(getRowStart(this.selectedCell()));
+      return;
+    }
+
+    if (isEndKey(key)) {
+      event.preventDefault();
+      this.selectedCell.set(getRowEnd(this.selectedCell()));
+      return;
+    }
+
     if (!this.selectedCell()) return;
 
     if (isNumberKey(key)) {
@@ -108,6 +145,36 @@ export class GamePageComponent {
       )
     );
     this.board.set(newBoard);
+  }
+
+  private findNextEmptyCell(reverse: boolean): CellPosition | null {
+    const currentBoard = this.board();
+    const current = this.selectedCell();
+    const startRow = current?.row ?? 0;
+    const startCol = current?.col ?? (reverse ? 8 : -1);
+
+    const step = reverse ? -1 : 1;
+    let row = startRow;
+    let col = startCol + step;
+
+    for (let i = 0; i < 81; i++) {
+      if (col > 8) {
+        col = 0;
+        row = (row + 1) % 9;
+      } else if (col < 0) {
+        col = 8;
+        row = (row - 1 + 9) % 9;
+      }
+
+      const cell = currentBoard[row][col];
+      if (!cell.isPrefilled && cell.value === 0) {
+        return { row, col };
+      }
+
+      col += step;
+    }
+
+    return null;
   }
 
   startGame(difficulty: Difficulty): void {
