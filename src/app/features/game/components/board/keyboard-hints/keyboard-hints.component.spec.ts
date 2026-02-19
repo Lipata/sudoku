@@ -7,7 +7,7 @@ describe('KeyboardHintsComponent', () => {
 
   const getKeyTexts = (): string[] => {
     const keys = fixture.nativeElement.querySelectorAll('.key') as NodeListOf<HTMLElement>;
-    return Array.from(keys).map(k => k.textContent?.trim() ?? '');
+    return [...keys].map(k => k.textContent?.trim() ?? '');
   };
 
   beforeEach(async () => {

@@ -1,11 +1,13 @@
-import { Component, HostListener, inject, signal, computed } from '@angular/core';
+import { Component, DestroyRef, HostListener, inject, signal, computed } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { timer } from 'rxjs';
 import { TitleCasePipe } from '@angular/common';
 import { BoardComponent } from '../../components/board/board.component';
 import { NumberPadComponent } from '../../components/board/number-pad/number-pad.component';
 import { PopupComponent } from '../../components/board/popup/popup.component';
 import { CellInputComponent } from '../../components/board/cell-input/cell-input.component';
 import { KeyboardHintsComponent } from '../../components/board/keyboard-hints/keyboard-hints.component';
-import { SudokuApiService } from '../../../../core/services';
+import { SudokuApiService, LoadingService, ErrorService } from '../../../../core/services';
 import { Board, Difficulty, CellPosition } from '../../../../models';
 import { apiBoardToBoard, boardToApiBoard, createEmptyBoard } from '../../../../utils/board.util';
 import {
@@ -34,6 +36,9 @@ import { isValidPlacement, getInvalidNumbers } from '../../../../utils/validatio
 })
 export class GamePageComponent {
   private readonly api = inject(SudokuApiService);
+  private readonly destroyRef = inject(DestroyRef);
+  readonly loadingService = inject(LoadingService);
+  readonly errorService = inject(ErrorService);
 
   // Game state
   board = signal<Board>(createEmptyBoard());
@@ -44,11 +49,7 @@ export class GamePageComponent {
   selectedCell = signal<CellPosition | null>(null);
   invalidCell = signal<CellPosition | null>(null);
 
-  // Loading and status
-  isLoading = signal(false);
-  isValidating = signal(false);
-  isSolving = signal(false);
-  error = signal<string | null>(null);
+  // Status
   validationStatus = signal<'solved' | 'broken' | null>(null);
 
   // UI
@@ -60,7 +61,8 @@ export class GamePageComponent {
   disabledNumbers = computed(() => {
     const selected = this.selectedCell();
     if (!selected || this.selectedDifficulty() !== 'easy') return [];
-    return getInvalidNumbers(this.board(), selected.row, selected.col);
+    const { row, col } = selected;
+    return getInvalidNumbers(this.board(), row, col);
   });
 
   readonly difficulties: Difficulty[] = ['easy', 'medium', 'hard', 'random'];
@@ -131,12 +133,13 @@ export class GamePageComponent {
     const selected = this.selectedCell();
     if (!selected) return;
 
+    const { row, col } = selected;
     const currentBoard = this.board();
-    if (currentBoard[selected.row][selected.col].isPrefilled) return;
+    if (currentBoard[row][col].isPrefilled) return;
 
     // In Easy mode: validate placement
     if (this.selectedDifficulty() === 'easy' && value !== 0) {
-      if (!isValidPlacement(currentBoard, selected.row, selected.col, value)) {
+      if (!isValidPlacement(currentBoard, row, col, value)) {
         this.showInvalidFeedback(selected, value);
         return;
       }
@@ -149,10 +152,10 @@ export class GamePageComponent {
     this.updateCell(position, value);
     this.invalidCell.set(position);
 
-    setTimeout(() => {
+    timer(500).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.updateCell(position, 0);
       this.invalidCell.set(null);
-    }, 500);
+    });
   }
 
   private updateCell(position: CellPosition, value: number): void {
@@ -196,46 +199,35 @@ export class GamePageComponent {
   }
 
   startGame(difficulty: Difficulty): void {
-    this.isLoading.set(true);
-    this.error.set(null);
+    this.errorService.clearError();
     this.selectedDifficulty.set(difficulty);
 
-    this.api.getBoard(difficulty).subscribe({
+    this.api.getBoard(difficulty).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response) => {
         this.board.set(apiBoardToBoard(response.board));
-        // Use actual difficulty from API if available (for random)
         if (response.difficulty) {
           this.selectedDifficulty.set(response.difficulty);
         }
-        this.isLoading.set(false);
         this.gameStarted.set(true);
       },
-      error: () => {
-        this.error.set('Failed to load puzzle');
-        this.isLoading.set(false);
-      },
+      error: () => {},
     });
   }
 
   backToMenu(): void {
     this.gameStarted.set(false);
-    this.error.set(null);
+    this.errorService.clearError();
     this.validationStatus.set(null);
   }
 
   validateBoard(): void {
-    this.isValidating.set(true);
     this.validationStatus.set(null);
 
-    this.api.validate(boardToApiBoard(this.board())).subscribe({
+    this.api.validate(boardToApiBoard(this.board())).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response) => {
         this.validationStatus.set(response.status);
-        this.isValidating.set(false);
       },
-      error: () => {
-        this.error.set('Failed to validate puzzle');
-        this.isValidating.set(false);
-      },
+      error: () => {},
     });
   }
 
@@ -243,12 +235,14 @@ export class GamePageComponent {
     this.validationStatus.set(null);
   }
 
-  onMobileCellSelect(position: CellPosition | null): void {
+  onCellSelect(position: CellPosition | null): void {
     if (!position) return;
-    const cell = this.board()[position.row][position.col];
-    if (!cell.isPrefilled) {
-      this.selectedCell.set(position);
-      this.showCellInput.set(true);
+    if (!window.matchMedia('(min-width: 768px)').matches) {
+      const { row, col } = position;
+      const cell = this.board()[row][col];
+      if (!cell.isPrefilled) {
+        this.showCellInput.set(true);
+      }
     }
   }
 
@@ -281,23 +275,18 @@ export class GamePageComponent {
   }
 
   private solveBoard(): void {
-    this.isSolving.set(true);
     this.validationStatus.set(null);
 
-    this.api.solve(boardToApiBoard(this.board())).subscribe({
+    this.api.solve(boardToApiBoard(this.board())).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response) => {
         if (response.status === 'solved') {
           this.board.set(apiBoardToBoard(response.solution));
           this.validationStatus.set('solved');
         } else {
-          this.error.set('Puzzle cannot be solved');
+          this.errorService.setError('Puzzle cannot be solved');
         }
-        this.isSolving.set(false);
       },
-      error: () => {
-        this.error.set('Failed to solve puzzle');
-        this.isSolving.set(false);
-      },
+      error: () => {},
     });
   }
 }

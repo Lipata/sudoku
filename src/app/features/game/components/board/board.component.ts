@@ -20,6 +20,7 @@ export class BoardComponent {
 
     const selected = this.selectedCell();
     if (!selected) return null;
-    return this.board()[selected.row][selected.col].value;
+    const { row, col } = selected;
+    return this.board()[row][col].value;
   });
 }

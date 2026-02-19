@@ -1,4 +1,6 @@
-import { Component, input, output, effect } from '@angular/core';
+import { Component, DestroyRef, inject, input, output, effect } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { timer } from 'rxjs';
 
 export type PopupType = 'message' | 'confirm';
 export type PopupVariant = 'success' | 'error' | 'warning';
@@ -9,6 +11,8 @@ export type PopupVariant = 'success' | 'error' | 'warning';
   templateUrl: './popup.component.html',
 })
 export class PopupComponent {
+  private readonly destroyRef = inject(DestroyRef);
+
   type = input<PopupType>('message');
   variant = input<PopupVariant>('warning');
   message = input.required<string>();
@@ -22,7 +26,7 @@ export class PopupComponent {
     effect(() => {
       const ms = this.autoHideMs();
       if (ms && ms > 0) {
-        setTimeout(() => this.closed.emit(), ms);
+        timer(ms).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.closed.emit());
       }
     });
   }

@@ -30,8 +30,7 @@ export function getNavigationKey(event: KeyboardEvent): NavigationKey | null {
 }
 
 export function getNextPosition(current: CellPosition | null, key: NavigationKey): CellPosition {
-  const row = current?.row ?? 0;
-  const col = current?.col ?? 0;
+  const { row = 0, col = 0 } = current ?? {};
   const delta = NAVIGATION_KEYS[key];
 
   return {

@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { GamePageComponent } from './game-page.component';
-import { SudokuApiService } from '../../../../core/services';
+import { SudokuApiService, ErrorService, LoadingService } from '../../../../core/services';
 import { Board, ApiBoard } from '../../../../models';
 
 function createTestBoard(): Board {
@@ -17,6 +17,8 @@ function createTestApiBoard(): ApiBoard {
 
 describe('GamePageComponent', () => {
   let component: GamePageComponent;
+  let errorService: ErrorService;
+  let loadingService: LoadingService;
   let mockApiService: {
     validate: ReturnType<typeof vi.fn>;
     solve: ReturnType<typeof vi.fn>;
@@ -37,6 +39,8 @@ describe('GamePageComponent', () => {
     });
 
     component = TestBed.runInInjectionContext(() => new GamePageComponent());
+    errorService = TestBed.inject(ErrorService);
+    loadingService = TestBed.inject(LoadingService);
     component.board.set(createTestBoard());
     component.gameStarted.set(true);
   });
@@ -210,9 +214,9 @@ describe('GamePageComponent', () => {
     });
 
     it('clears error', () => {
-      component.error.set('Some error');
+      errorService.setError('Some error');
       component.backToMenu();
-      expect(component.error()).toBeNull();
+      expect(errorService.error()).toBeNull();
     });
 
     it('clears validationStatus', () => {
@@ -223,7 +227,7 @@ describe('GamePageComponent', () => {
   });
 
   describe('validateBoard', () => {
-    it('sets isValidating to true while validating', () => {
+    it('calls validate API', () => {
       mockApiService.validate.mockReturnValue(of({ status: 'solved' }));
 
       component.validateBoard();
@@ -237,7 +241,6 @@ describe('GamePageComponent', () => {
       component.validateBoard();
 
       expect(component.validationStatus()).toBe('solved');
-      expect(component.isValidating()).toBe(false);
     });
 
     it('sets validationStatus to broken for invalid board', () => {
@@ -246,16 +249,12 @@ describe('GamePageComponent', () => {
       component.validateBoard();
 
       expect(component.validationStatus()).toBe('broken');
-      expect(component.isValidating()).toBe(false);
     });
 
-    it('sets error on API failure', () => {
+    it('does not throw on API failure', () => {
       mockApiService.validate.mockReturnValue(throwError(() => new Error('API Error')));
 
-      component.validateBoard();
-
-      expect(component.error()).toBe('Failed to validate puzzle');
-      expect(component.isValidating()).toBe(false);
+      expect(() => component.validateBoard()).not.toThrow();
     });
   });
 
@@ -274,7 +273,6 @@ describe('GamePageComponent', () => {
 
       expect(component.board()[0][0].value).toBe(5);
       expect(component.validationStatus()).toBe('solved');
-      expect(component.isSolving()).toBe(false);
     });
 
     it('sets error for unsolvable board', () => {
@@ -283,18 +281,16 @@ describe('GamePageComponent', () => {
       component.requestAction('solve');
       component.confirmAction();
 
-      expect(component.error()).toBe('Puzzle cannot be solved');
-      expect(component.isSolving()).toBe(false);
+      expect(errorService.error()).toBe('Puzzle cannot be solved');
     });
 
-    it('sets error on API failure', () => {
+    it('does not throw on API failure', () => {
       mockApiService.solve.mockReturnValue(throwError(() => new Error('API Error')));
 
-      component.requestAction('solve');
-      component.confirmAction();
-
-      expect(component.error()).toBe('Failed to solve puzzle');
-      expect(component.isSolving()).toBe(false);
+      expect(() => {
+        component.requestAction('solve');
+        component.confirmAction();
+      }).not.toThrow();
     });
   });
 

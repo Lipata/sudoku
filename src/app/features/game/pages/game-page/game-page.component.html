@@ -16,13 +16,13 @@
   <div class="max-w-md mx-auto">
     <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">Sudoku</h1>
 
-    @if (isLoading()) {
+    @if (loadingService.loading() && !gameStarted()) {
       <div class="text-center text-gray-600">Loading puzzle...</div>
-    } @else if (error()) {
-      <div class="text-center text-red-600 mb-4">{{ error() }}</div>
+    } @else if (errorService.error()) {
+      <div class="text-center text-red-600 mb-4">{{ errorService.error() }}</div>
       <button
         class="w-full py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
-        (click)="backToMenu()"
+        (click)="errorService.clearError(); backToMenu()"
       >
         Back to Menu
       </button>
@@ -52,29 +52,16 @@
       >
         {{ selectedDifficulty() | titlecase }}
       </div>
-      <!-- Mobile: board with tap-to-input -->
-      <div class="md:hidden">
-        <app-board
-          [board]="board()"
-          [selectedCell]="selectedCell()"
-          [invalidCell]="invalidCell()"
-          [difficulty]="selectedDifficulty()"
-          (selectedCellChange)="onMobileCellSelect($event)"
-        />
-        <p class="text-center text-gray-500 text-sm mt-4">
-          Tap a cell to enter a number
-        </p>
-      </div>
-
-      <!-- Desktop: board with keyboard/number pad -->
-      <div class="hidden md:block">
-        <app-board
-          [board]="board()"
-          [(selectedCell)]="selectedCell"
-          [invalidCell]="invalidCell()"
-          [difficulty]="selectedDifficulty()"
-        />
-      </div>
+      <app-board
+        [board]="board()"
+        [(selectedCell)]="selectedCell"
+        [invalidCell]="invalidCell()"
+        [difficulty]="selectedDifficulty()"
+        (selectedCellChange)="onCellSelect($event)"
+      />
+      <p class="md:hidden text-center text-gray-500 text-sm mt-4">
+        Tap a cell to enter a number
+      </p>
 
       <!-- Desktop: collapsible number pad -->
       <div class="hidden md:block mt-4">
@@ -107,17 +94,17 @@
       <div class="flex gap-2 mt-4">
         <button
           class="flex-1 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 active:bg-green-800 disabled:opacity-50"
-          [disabled]="isValidating() || isSolving()"
+          [disabled]="loadingService.loading()"
           (click)="validateBoard()"
         >
-          {{ isValidating() ? 'Validating...' : 'Validate' }}
+          {{ loadingService.loading() ? 'Loading...' : 'Validate' }}
         </button>
         <button
           class="px-3 py-2 text-xs bg-gray-500 text-white rounded-lg hover:bg-gray-600 active:bg-gray-700 disabled:opacity-50"
-          [disabled]="isValidating() || isSolving()"
+          [disabled]="loadingService.loading()"
           (click)="requestAction('solve')"
         >
-          {{ isSolving() ? '...' : 'Solve' }}
+          Solve
         </button>
         <button
           class="px-3 py-2 text-xs bg-gray-600 text-white rounded-lg hover:bg-gray-700 active:bg-gray-800"
